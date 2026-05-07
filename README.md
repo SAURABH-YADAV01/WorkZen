@@ -231,4 +231,4 @@ npm run build
 
 ## Author
 
-Team Task Manager project by Nitish.
+Team Task Manager project by Saurabh.

@@ -1,4 +1,4 @@
-# Team Task Manager Backend
+# Work Zen Backend
 
 Express + MongoDB backend for a collaborative team task management app.
 
@@ -13,7 +13,7 @@ npm run dev
 
 ```env
 PORT=8000
-MONGO_URL=mongodb://localhost:27017/team-task-manager
+MONGO_URL=mongodb://localhost:27017/workzen
 JWT_SECRET=replace_with_a_long_random_secret
 FRONTEND_URL=http://localhost:5173
 NODE_ENV=development

@@ -1,10 +1,10 @@
-# Team Task Manager
+# Work Zen
 
 A full-stack team task management web application built with React, Express, MongoDB, and JWT authentication. Users can create projects, add team members, assign tasks, update progress, and view dashboard statistics.
 
 ##  Live Demo
 
-https://team-task-manager-frontend-9x7w.onrender.com/
+
 
 ## Features
 
@@ -41,7 +41,7 @@ https://team-task-manager-frontend-9x7w.onrender.com/
 ## Project Structure
 
 ```text
-TeamTaskManager/
+Work Zen/
   backend/
     config/
     controllers/
@@ -75,7 +75,7 @@ Create a `.env` file inside the `backend` folder:
 
 ```env
 PORT=8000
-MONGO_URL=mongodb://localhost:27017/team-task-manager
+MONGO_URL=mongodb://localhost:27017/workzen
 JWT_SECRET=your_long_secret_key
 FRONTEND_URL=http://localhost:5173,http://localhost:5174
 NODE_ENV=development

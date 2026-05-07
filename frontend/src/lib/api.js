@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8000/api";
+// const API_URL = "http://localhost:8000/api";
+const API_URL = "https://workzen-production-951d.up.railway.app/api";
 export const apiRequest = async (path, { method = "GET", body, token } = {}) => {
   const response = await fetch(`${API_URL}${path}`, {
     method,

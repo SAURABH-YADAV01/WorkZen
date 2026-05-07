@@ -29,15 +29,19 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const token = auth?.token;
-  const selectedProject = projects.find(project => project._id === selectedProjectId);
+  const projectList = Array.isArray(projects) ? projects : [];
+  const taskList = Array.isArray(tasks) ? tasks : [];
+  const userList = Array.isArray(users) ? users : [];
+  const tasksPerUserList = Array.isArray(tasksPerUser) ? tasksPerUser : [];
+  const selectedProject = projectList.find(project => project._id === selectedProjectId);
   const isProjectAdmin = selectedProject?.createdBy?._id === auth?._id || selectedProject?.createdBy === auth?._id;
 
   const taskGroups = useMemo(() => {
     return STATUSES.reduce((groups, status) => {
-      groups[status] = tasks.filter(task => task.status === status);
+      groups[status] = taskList.filter(task => task.status === status);
       return groups;
     }, {});
-  }, [tasks]);
+  }, [taskList]);
 
   const showMessage = (text) => {
     setMessage(text);
@@ -48,9 +52,10 @@ function App() {
 
   const loadProjects = async () => {
     const data = await request("/projects");
-    setProjects(data);
-    if (!selectedProjectId && data.length) {
-      setSelectedProjectId(data[0]._id);
+    const projectData = Array.isArray(data) ? data : [];
+    setProjects(projectData);
+    if (!selectedProjectId && projectData.length) {
+      setSelectedProjectId(projectData[0]._id);
     }
   };
 
@@ -60,9 +65,10 @@ function App() {
     setLoading(true);
     try {
       const projectData = await request("/projects");
-      setProjects(projectData);
+      const nextProjects = Array.isArray(projectData) ? projectData : [];
+      setProjects(nextProjects);
 
-      const activeProjectId = selectedProjectId || projectData[0]?._id || "";
+      const activeProjectId = selectedProjectId || nextProjects[0]?._id || "";
       if (activeProjectId && !selectedProjectId) {
         setSelectedProjectId(activeProjectId);
       }
@@ -74,7 +80,7 @@ function App() {
         request(dashboardPath)
       ]);
 
-      setTasks(taskData);
+      setTasks(Array.isArray(taskData) ? taskData : []);
       setDashboard(dashboardData);
     } catch (error) {
       showMessage(error.message);
@@ -93,7 +99,7 @@ function App() {
 
       try {
         const data = await request(`/auth/users?search=${encodeURIComponent(search)}`);
-        setUsers(data);
+        setUsers(Array.isArray(data) ? data : []);
       } catch (error) {
         showMessage(error.message);
       }
@@ -111,14 +117,14 @@ function App() {
 
       try {
         const data = await request(`/dashboard/tasks-per-user?projectId=${selectedProjectId}`);
-        setTasksPerUser(data);
+        setTasksPerUser(Array.isArray(data) ? data : []);
       } catch {
         setTasksPerUser([]);
       }
     };
 
     loadTasksPerUser();
-  }, [selectedProjectId, isProjectAdmin, tasks.length]);
+  }, [selectedProjectId, isProjectAdmin, taskList.length]);
 
   const handleAuth = async (event) => {
     event.preventDefault();
@@ -166,7 +172,7 @@ function App() {
   const deleteProject = async (projectId) => {
     try {
       await request(`/projects/${projectId}`, { method: "DELETE" });
-      const remainingProjects = projects.filter(project => project._id !== projectId);
+      const remainingProjects = projectList.filter(project => project._id !== projectId);
       setSelectedProjectId(remainingProjects[0]?._id || "");
       showMessage("Project deleted");
       await loadProjects();
@@ -295,7 +301,7 @@ function App() {
     <main className="app-shell">
       <Sidebar
         auth={auth}
-        projects={projects}
+        projects={projectList}
         selectedProjectId={selectedProjectId}
         projectForm={projectForm}
         onCreateProject={createProject}
@@ -319,7 +325,7 @@ function App() {
               selectedProject={selectedProject}
               taskForm={taskForm}
               taskGroups={taskGroups}
-              tasksCount={tasks.length}
+              tasksCount={taskList.length}
               onCancelEdit={cancelTaskEdit}
               onDeleteTask={deleteTask}
               onEditTask={editTask}
@@ -333,8 +339,8 @@ function App() {
               isProjectAdmin={isProjectAdmin}
               search={search}
               selectedProject={selectedProject}
-              tasksPerUser={tasksPerUser}
-              users={users}
+              tasksPerUser={tasksPerUserList}
+              users={userList}
               onAddMember={addMember}
               onRemoveMember={removeMember}
               onSearchChange={setSearch}
